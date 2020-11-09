@@ -315,7 +315,6 @@ dist/
 aot/
 
 # Appsettings file that may contain secrets
-appsettings.json
 appsettings.*.json
 
 [Dd]etectorsCache

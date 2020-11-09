@@ -34,8 +34,14 @@ namespace Kusto.Data.Ingestor
                     appConfig.AddEnvironmentVariables(prefix: "ASPNETCORE_");
                     appConfig.AddEnvironmentVariables(prefix: Constants.AppSettingPrefix);
                     appConfig.AddEnvironmentVariables(prefix: $"{Constants.AppSettingPrefix}{Constants.RegionPrefix}");
-                    appConfig.AddJsonFile($"{Constants.AppSettingFileName}.json", optional: false, reloadOnChange: false);
-                    appConfig.AddJsonFile($"{Constants.AppSettingFileName}.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: false);
+                    if(hostContext.HostingEnvironment.IsDevelopment())
+                    {
+                        appConfig.AddJsonFile($"{Constants.AppSettingFileName}.Development.json", optional: false, reloadOnChange: false);
+                    }
+                    else
+                    {
+                        appConfig.AddJsonFile($"{Constants.AppSettingFileName}.Production.json", optional: false, reloadOnChange: false);
+                    }
                 })
                 .ConfigureWebJobs(b => {
                 })
@@ -45,7 +51,7 @@ namespace Kusto.Data.Ingestor
                     if(Constants.IsRunningOnCloud)
                     {
                         //Give preference to the value set in appsettings.json
-                        loggingConfig.AddApplicationInsights(hostContext.Configuration["ApplicationInsights:InstrumentationKey"] ?? Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY") ?? "f4e62ff6 -53cd-4e11-a106-3ae297e74ea9");
+                        loggingConfig.AddApplicationInsights(hostContext.Configuration["ApplicationInsights:InstrumentationKey"] ?? Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY") ?? string.Empty);
                         if(Enum.TryParse<LogLevel>(hostContext.Configuration["ApplicationInsights:LogLevel:Default"] ?? "Information", true, out LogLevel defaultLogLevel))
                         {
                             loggingConfig.AddFilter<ApplicationInsightsLoggerProvider>("", defaultLogLevel);

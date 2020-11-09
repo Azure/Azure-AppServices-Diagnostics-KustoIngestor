@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Kusto.Data.Ingestor.Common": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
